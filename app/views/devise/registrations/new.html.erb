@@ -1,0 +1,90 @@
+<div class="min-w-0 flex-1 flex flex-col justify-center">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+      新規アカウント登録
+    </h2>
+  </div>
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), class: "space-y-6") do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <div>
+          <%= f.label :name, "お名前", class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1">
+            <%= f.text_field :name, autofocus: true, 
+                class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :email, "メールアドレス", class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1">
+            <%= f.email_field :email, autocomplete: "email", 
+                class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :height, "身長 (cm)", class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1">
+            <%= f.number_field :height, step: 0.1, 
+                class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :gender, "性別", class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1">
+            <%= f.select :gender, [["男性", "male"], ["女性", "female"], ["その他", "other"]], { prompt: "選択してください" },
+                class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :birth_date, "生年月日", class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1">
+            <%= f.date_field :birth_date, 
+                class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :target_weight, "目標体重 (kg) ※任意", class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1">
+            <%= f.number_field :target_weight, step: 0.1, 
+                class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :password, "パスワード", class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1">
+            <%= f.password_field :password, autocomplete: "new-password",
+                class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+          <% if @minimum_password_length %>
+            <p class="mt-1 text-sm text-gray-500">最低 <%= @minimum_password_length %> 文字以上</p>
+          <% end %>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, "パスワード確認", class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1">
+            <%= f.password_field :password_confirmation, autocomplete: "new-password",
+                class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.submit "アカウント作成", class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        </div>
+      <% end %>
+
+      <div class="mt-6">
+        <%= render "devise/shared/links" %>
+      </div>
+    </div>
+  </div>
+</div>

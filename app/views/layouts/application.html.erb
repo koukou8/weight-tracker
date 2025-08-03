@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Weight Manage" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    
+    <!-- Chart.jsとChartkickとdate-fns adapterをCDNから直接読み込み -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.30.0/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartkick@5.0.1/dist/chartkick.min.js"></script>
+    
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-gray-50 min-h-screen">
+    <% if user_signed_in? %>
+      <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            <div class="flex items-center">
+              <%= link_to "体重管理アプリ", root_path, class: "text-xl font-bold text-blue-600" %>
+            </div>
+            <div class="flex items-center space-x-4">
+              <%= link_to "ダッシュボード", root_path, class: "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium" %>
+              <%= link_to "体重記録", weight_logs_path, class: "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium" %>
+              <%= link_to "目標設定", goals_path, class: "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium" %>
+              <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium" %>
+            </div>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
+    <% if notice %>
+      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 mx-4 mt-4">
+        <%= notice %>
+      </div>
+    <% end %>
+
+    <% if alert %>
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 mx-4 mt-4">
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <main class="<%= user_signed_in? ? 'max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8' : 'min-h-screen flex items-center justify-center' %>">
+      <%= yield %>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">体重記録詳細</h1>
+    <div class="flex space-x-2">
+      <%= link_to "編集", edit_weight_log_path(@weight_log), class: "bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded" %>
+      <%= link_to "削除", weight_log_path(@weight_log), data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: "bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h2 class="text-lg font-semibold text-gray-700 mb-2">基本情報</h2>
+      <div class="space-y-3">
+        <div class="flex justify-between">
+          <span class="text-gray-600">日付:</span>
+          <span class="font-medium"><%= @weight_log.date.strftime('%Y/%m/%d') %></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">体重:</span>
+          <span class="font-medium"><%= @weight_log.weight %> kg</span>
+        </div>
+        <% if @weight_log.body_fat.present? %>
+          <div class="flex justify-between">
+            <span class="text-gray-600">体脂肪率:</span>
+            <span class="font-medium"><%= @weight_log.body_fat %>%</span>
+          </div>
+        <% end %>
+        <% if @weight_log.bmi %>
+          <div class="flex justify-between">
+            <span class="text-gray-600">BMI:</span>
+            <span class="font-medium"><%= @weight_log.bmi %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @weight_log.memo.present? %>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h2 class="text-lg font-semibold text-gray-700 mb-2">メモ</h2>
+        <p class="text-gray-600"><%= @weight_log.memo %></p>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-6">
+    <%= link_to "一覧に戻る", weight_logs_path, class: "text-blue-600 hover:text-blue-900" %>
+  </div>
+</div>

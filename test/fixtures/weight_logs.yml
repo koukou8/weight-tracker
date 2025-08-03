@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  date: 2025-07-21
+  weight: 1.5
+  body_fat: 1.5
+  memo: MyText
+
+two:
+  user: two
+  date: 2025-07-21
+  weight: 1.5
+  body_fat: 1.5
+  memo: MyText

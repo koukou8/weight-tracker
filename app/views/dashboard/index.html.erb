@@ -1,0 +1,239 @@
+<div class="space-y-6">
+  <div class="md:flex md:items-center md:justify-between">
+    <div class="flex-1 min-w-0">
+      <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+        ダッシュボード
+      </h2>
+      <p class="mt-1 text-sm text-gray-500">
+        ようこそ、<%= current_user.name %>さん
+      </p>
+    </div>
+    <div class="mt-4 flex md:mt-0 md:ml-4">
+      <%= link_to "体重記録を追加", new_weight_log_path, 
+          class: "ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+    </div>
+  </div>
+
+  <!-- 体重推移グラフ -->
+  <div class="bg-white shadow rounded-lg p-6">
+    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">体重の推移</h3>
+    <% if @weight_logs_30days.any? %>
+      <div class="h-64">
+        <%= line_chart @weight_logs_30days.pluck(:date, :weight).to_h %>
+      </div>
+      
+      <% if @weight_logs_30days.where.not(body_fat: nil).any? %>
+        <div class="mt-8 h-64">
+          <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">体脂肪率の推移</h3>
+          <%= line_chart @weight_logs_30days.where.not(body_fat: nil).pluck(:date, :body_fat).to_h %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="bg-gray-50 p-6 text-center rounded-lg">
+        <p class="text-gray-500">データがありません。体重を記録すると、ここにグラフが表示されます。</p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- 統計情報カード -->
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <!-- 現在の体重 -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <span class="text-white font-bold text-sm">W</span>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">現在の体重</dt>
+              <dd class="text-lg font-medium text-gray-900">
+                <% if @current_weight %>
+                  <%= @current_weight %> kg
+                <% else %>
+                  未記録
+                <% end %>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 現在のBMI -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+              <span class="text-white font-bold text-sm">B</span>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">現在のBMI</dt>
+              <dd class="text-lg font-medium text-gray-900">
+                <% if @current_bmi %>
+                  <%= @current_bmi %>
+                <% else %>
+                  未計算
+                <% end %>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 目標体重 -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+              <span class="text-white font-bold text-sm">G</span>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">目標体重</dt>
+              <dd class="text-lg font-medium text-gray-900">
+                <% if current_user.target_weight %>
+                  <%= current_user.target_weight %> kg
+                <% else %>
+                  未設定
+                <% end %>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 記録日数 -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+              <span class="text-white font-bold text-sm">D</span>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">記録日数</dt>
+              <dd class="text-lg font-medium text-gray-900">
+                <%= current_user.weight_logs.count %> 日
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <!-- 最近の体重記録 -->
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">最近の体重記録</h3>
+        <% if @recent_weight_logs.any? %>
+          <div class="space-y-3">
+            <% @recent_weight_logs.each do |log| %>
+              <div class="flex justify-between items-center py-2 border-b border-gray-200">
+                <div>
+                  <p class="text-sm font-medium text-gray-900"><%= log.date.strftime("%m/%d") %></p>
+                  <p class="text-xs text-gray-500"><%= log.memo if log.memo.present? %></p>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-medium text-gray-900"><%= log.weight %> kg</p>
+                  <% if log.body_fat %>
+                    <p class="text-xs text-gray-500">体脂肪: <%= log.body_fat %>%</p>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-4">
+            <%= link_to "すべての記録を見る", weight_logs_path, class: "text-blue-600 hover:text-blue-500 text-sm font-medium" %>
+          </div>
+        <% else %>
+          <p class="text-gray-500 text-center py-8">まだ記録がありません</p>
+          <%= link_to "最初の記録を追加", new_weight_log_path, class: "block text-center text-blue-600 hover:text-blue-500 text-sm font-medium mt-2" %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- アクティブな目標 -->
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">現在の目標</h3>
+        <% if @active_goal %>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-500">目標体重</span>
+              <span class="text-lg font-medium text-gray-900"><%= @active_goal.target_weight %> kg</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-500">目標日</span>
+              <span class="text-sm font-medium text-gray-900"><%= @active_goal.target_date.strftime("%Y/%m/%d") %></span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-500">残り日数</span>
+              <span class="text-sm font-medium text-gray-900"><%= @active_goal.days_remaining %> 日</span>
+            </div>
+            <% if @active_goal.progress_percentage > 0 %>
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-sm text-gray-500">進捗</span>
+                  <span class="text-sm font-medium text-gray-900"><%= @active_goal.progress_percentage %>%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-blue-600 h-2 rounded-full" style="width: <%= @active_goal.progress_percentage %>%"></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-4">
+            <%= link_to "目標を編集", edit_goal_path(@active_goal), class: "text-blue-600 hover:text-blue-500 text-sm font-medium" %>
+          </div>
+        <% else %>
+          <p class="text-gray-500 text-center py-8">目標が設定されていません</p>
+          <%= link_to "目標を設定", new_goal_path, class: "block text-center text-blue-600 hover:text-blue-500 text-sm font-medium mt-2" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- クイック記録フォーム -->
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">今日の体重を記録</h3>
+      <%= form_with model: @weight_log, local: true, class: "space-y-4" do |f| %>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div>
+            <%= f.label :date, "日付", class: "block text-sm font-medium text-gray-700" %>
+            <%= f.date_field :date, value: Date.current, class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+          <div>
+            <%= f.label :weight, "体重 (kg)", class: "block text-sm font-medium text-gray-700" %>
+            <%= f.number_field :weight, step: 0.1, placeholder: "70.0", class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+          <div>
+            <%= f.label :body_fat, "体脂肪率 (%) ※任意", class: "block text-sm font-medium text-gray-700" %>
+            <%= f.number_field :body_fat, step: 0.1, placeholder: "20.0", class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+        </div>
+        <div>
+          <%= f.label :memo, "メモ ※任意", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_area :memo, rows: 2, placeholder: "今日の調子や気になったこと...", class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+        </div>
+        <div class="flex justify-end">
+          <%= f.submit "記録を保存", class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
