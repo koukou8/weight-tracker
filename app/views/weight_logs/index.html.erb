@@ -25,10 +25,12 @@
               <td class="py-4 px-4 whitespace-nowrap"><%= log.body_fat.present? ? "#{log.body_fat}%" : '-' %></td>
               <td class="py-4 px-4 whitespace-nowrap"><%= log.bmi || '-' %></td>
               <td class="py-4 px-4 whitespace-nowrap"><%= log.memo.present? ? log.memo : '-' %></td>
-              <td class="py-4 px-4 whitespace-nowrap space-x-2">
-                <%= link_to "詳細", weight_log_path(log), class: "text-blue-600 hover:text-blue-900" %>
-                <%= link_to "編集", edit_weight_log_path(log), class: "text-green-600 hover:text-green-900" %>
-                <%= link_to "削除", weight_log_path(log), data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: "text-red-600 hover:text-red-900" %>
+              <td class="py-4 px-4 whitespace-nowrap">
+                <div class="flex justify-start space-x-4">
+                  <%= link_to "詳細", weight_log_path(log), class: "text-blue-600 hover:text-blue-900" %>
+                  <%= link_to "編集", edit_weight_log_path(log), class: "text-green-600 hover:text-green-900" %>
+                  <%= button_to "削除", weight_log_path(log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "text-red-600 hover:text-red-900 bg-transparent border-none p-0 cursor-pointer" %>
+                </div>
               </td>
             </tr>
           <% end %>
